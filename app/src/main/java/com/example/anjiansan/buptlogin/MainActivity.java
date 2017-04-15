@@ -14,8 +14,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.Request;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,6 +81,46 @@ public class MainActivity extends AppCompatActivity {
                     editor.putBoolean("remember_me",true);
                 }
                 editor.apply();
+
+                login();
+            }
+        });
+    }
+
+    private boolean login(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    OkHttpClient client=new OkHttpClient();
+                    RequestBody requestBody=new FormBody.Builder()
+                            .add("DDDDD","2014211281")
+                            .add("upass","1196700468")
+                            .add("savePWD","0")
+                            .add("0MKKey","")
+                            .build();
+                    okhttp3.Request request=new okhttp3.Request.Builder()
+                            .url("http://10.3.8.211/")
+                            .post(requestBody)
+                            .build();
+                    Response response=client.newCall(request).execute();
+                    String responseData=response.body().string();
+                    showResponse(responseData);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        return true;
+    }
+
+    private void showResponse(final String response){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView textView=(TextView)findViewById(R.id.response);
+                textView.setText(response);
             }
         });
     }
