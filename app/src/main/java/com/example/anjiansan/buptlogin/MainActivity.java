@@ -2,6 +2,8 @@ package com.example.anjiansan.buptlogin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +33,17 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox remember_me;
     private EditText accountEdit;
     private EditText pwdEdit;
+    private static TextView responseView;
+
+    public static final int RESPONSE_TEXT=1;
+    private static Handler handler=new Handler(){
+        public void handleMessage(Message msg){
+            switch(msg.what){
+                case RESPONSE_TEXT:
+                    responseView.setText(msg.obj.toString());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         remember_me=(CheckBox)findViewById(R.id.remember);
         accountEdit=(EditText)findViewById(R.id.account_text);
         pwdEdit=(EditText)findViewById(R.id.pwd_text);
+        responseView=(TextView)findViewById(R.id.response);
 
         boolean isRemember=pref.getBoolean("remember_me",false);
         if(isRemember){
@@ -87,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private boolean login(){
+    public static boolean login(){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -105,7 +119,10 @@ public class MainActivity extends AppCompatActivity {
                             .build();
                     Response response=client.newCall(request).execute();
                     String responseData=response.body().string();
-                    showResponse(responseData);
+                    Message message=new Message();
+                    message.what=RESPONSE_TEXT;
+                    message.obj=responseData;
+                    handler.sendMessage(message);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -113,15 +130,5 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         return true;
-    }
-
-    private void showResponse(final String response){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView textView=(TextView)findViewById(R.id.response);
-                textView.setText(response);
-            }
-        });
     }
 }

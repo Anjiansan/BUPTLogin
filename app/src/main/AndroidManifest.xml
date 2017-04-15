@@ -22,7 +22,7 @@
         <activity android:name=".aboutActivity" />
 
         <service android:name=".QuickSettingService"
-            android:label="快速设定"
+            android:label="BUPTLogin"
             android:icon="@drawable/icon"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

@@ -20,6 +20,8 @@ public class QuickSettingService extends TileService {
             toggleState = STATE_OFF;
             icon =  Icon.createWithResource(getApplicationContext(), R.drawable.icon);
             getQsTile().setState(Tile.STATE_INACTIVE);// 更改成非活跃状态
+
+            MainActivity.login();
         } else {
             toggleState = STATE_ON;
             icon = Icon.createWithResource(getApplicationContext(), R.drawable.icon);
