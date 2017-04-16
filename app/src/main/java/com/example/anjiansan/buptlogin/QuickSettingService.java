@@ -30,7 +30,7 @@ public class QuickSettingService extends TileService {
             Toast.makeText(QuickSettingService.this,"已登录",Toast.LENGTH_SHORT).show();
         }
         else{
-            Toast.makeText(QuickSettingService.this,"已登录",Toast.LENGTH_SHORT).show();
+            Toast.makeText(QuickSettingService.this,"登录失败,请重试",Toast.LENGTH_SHORT).show();
         }
     }
 }

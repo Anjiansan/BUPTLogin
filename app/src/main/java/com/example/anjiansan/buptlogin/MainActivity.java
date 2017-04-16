@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -97,14 +98,21 @@ public class MainActivity extends AppCompatActivity {
         android7Hint=(TextView)findViewById(R.id.android7_hint);
         responseView=(TextView)findViewById(R.id.response);
         context=getApplicationContext();
+        isLogined=false;
 
-        boolean isRemember=pref.getBoolean("remember_me",false);
+        boolean isRemember=pref.getBoolean("remember_me",false);    //是否记住密码
         if(isRemember){
             account=pref.getString("account","");
             pwd=pref.getString("pwd","");
             accountEdit.setText(account);
             pwdEdit.setText(pwd);
             rememberMe.setChecked(true);
+        }
+
+        boolean isAutoLogin=pref.getBoolean("auto_login",false);
+        if(isAutoLogin){
+            autoLogin.setChecked(true);
+            login();
         }
 
         setSupportActionBar(toolbar);
@@ -130,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("pwd",pwd);
                 if(rememberMe.isChecked()){
                     editor.putBoolean("remember_me",true);
+                }
+                if(autoLogin.isChecked()){
+                    editor.putBoolean("auto_login",true);
                 }
                 editor.apply();
 
