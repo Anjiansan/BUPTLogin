@@ -5,30 +5,32 @@ import android.os.Build;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
+import android.widget.Toast;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class QuickSettingService extends TileService {
-    private final int STATE_OFF = 0;
-    private final int STATE_ON = 1;
-    private int toggleState = STATE_ON;
+
+    //当用户从Edit栏添加到快速设定中调用
+    @Override
+    public void onTileAdded() {
+        Icon icon;
+        icon = Icon.createWithResource(getApplicationContext(), R.drawable.icon);
+        getQsTile().setState(Tile.STATE_ACTIVE);//更改成活跃状态
+
+        getQsTile().setIcon(icon);//设置图标
+        getQsTile().updateTile();//更新Tile
+    }
 
     // 点击的时候
     @Override
     public void onClick() {
-        Icon icon;
-        if (toggleState == STATE_ON) {
-            toggleState = STATE_OFF;
-            icon =  Icon.createWithResource(getApplicationContext(), R.drawable.icon);
-            getQsTile().setState(Tile.STATE_INACTIVE);// 更改成非活跃状态
+        MainActivity.login();
 
-            MainActivity.login();
-        } else {
-            toggleState = STATE_ON;
-            icon = Icon.createWithResource(getApplicationContext(), R.drawable.icon);
-            getQsTile().setState(Tile.STATE_ACTIVE);//更改成活跃状态
+        if(MainActivity.isLogined){
+            Toast.makeText(QuickSettingService.this,"已登录",Toast.LENGTH_SHORT).show();
         }
-
-        getQsTile().setIcon(icon);//设置图标
-        getQsTile().updateTile();//更新Tile
+        else{
+            Toast.makeText(QuickSettingService.this,"已登录",Toast.LENGTH_SHORT).show();
+        }
     }
 }
