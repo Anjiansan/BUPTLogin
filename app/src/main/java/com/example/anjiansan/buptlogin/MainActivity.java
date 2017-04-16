@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     android7Hint.setVisibility(View.INVISIBLE);
 
                     responseView.setText(msg.obj.toString());
-                    Toast.makeText(context,"已成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"已登录",Toast.LENGTH_SHORT).show();
                     break;
                 case LOGIN_FAILED:
                     Toast.makeText(context,"登录失败,请重试",Toast.LENGTH_SHORT).show();

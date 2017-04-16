@@ -59,6 +59,7 @@
             android:layout_width="match_parent"
             app:layout_heightPercent="84%"
             android:layout_below="@id/about"
+            android:autoLink="web"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textSize="20sp"
