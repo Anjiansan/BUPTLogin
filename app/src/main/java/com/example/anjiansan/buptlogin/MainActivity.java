@@ -30,6 +30,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -238,7 +239,8 @@ public class MainActivity extends AppCompatActivity {
                 String flowString=m.group(1);
                 Long flow=Long.parseLong(flowString);
                 long flowKB=flow%1024;
-                data.append("已使用校外流量:"+(flow-flowKB)/1024+String.format("%.3f",(double)flowKB/1024)+"MB\n\n\n");
+                BigDecimal bd=new BigDecimal((double)flowKB/1024);
+                data.append("已使用校外流量:"+((flow-flowKB)/1024+bd.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue())+"MB\n\n\n");
             }
 
             p= Pattern.compile("fee='(\\d+) ");    //使用时间
