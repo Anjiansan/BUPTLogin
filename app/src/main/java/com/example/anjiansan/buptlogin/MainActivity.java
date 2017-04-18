@@ -3,6 +3,7 @@ package com.example.anjiansan.buptlogin;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -39,9 +40,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.R.id.message;
+
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences pref;
+    private static SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private static EditText accountEdit;
     private static EditText pwdEdit;
@@ -52,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private static String account;
     private static String pwd;
     private static TextView responseView;
-    public static boolean isLogined;
     private static Context context;
 
-    private static final int LOGIN_SUCESS=1;
     private static final int LOGIN_FAILED=0;
+    private static final int LOGIN_SUCESS=1;
+    private static final int MAKE_TOAST=2;
 
     private static Handler handler=new Handler(){
         public void handleMessage(Message msg){
@@ -75,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 case LOGIN_FAILED:
                     Toast.makeText(context,"登录失败,请重试",Toast.LENGTH_SHORT).show();
                     break;
+                case MAKE_TOAST:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        QuickSettingService.makeToast(msg.arg1);
+                    }
                 default:
                     break;
             }
@@ -99,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         android7Hint=(TextView)findViewById(R.id.android7_hint);
         responseView=(TextView)findViewById(R.id.response);
         context=getApplicationContext();
-        isLogined=false;
 
         boolean isRemember=pref.getBoolean("remember_me",false);    //是否记住密码
         if(isRemember){
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isAutoLogin=pref.getBoolean("auto_login",false);
         if(isAutoLogin){
             autoLogin.setChecked(true);
-            login();
+            login(account,pwd,false);
         }
 
         setSupportActionBar(toolbar);
@@ -145,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 editor.apply();
 
-                login();
+                login(account,pwd,false);
             }
         });
     }
@@ -175,45 +181,56 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    public static void login(){
+    public static void login(final String username, final String password, final boolean isTile){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
-                    OkHttpClient client=new OkHttpClient(); //发送登录post请求
-                    RequestBody requestBody=new FormBody.Builder()
-                            .add("DDDDD",account)
-                            .add("upass",pwd)
-                            .add("savePWD","0")
-                            .add("0MKKey","")
+                try {
+                    OkHttpClient client = new OkHttpClient(); //发送登录post请求
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("DDDDD", username)
+                            .add("upass", password)
+                            .add("savePWD", "0")
+                            .add("0MKKey", "")
                             .build();
-                    okhttp3.Request request=new okhttp3.Request.Builder()
+                    okhttp3.Request request = new okhttp3.Request.Builder()
                             .url("http://10.3.8.211/")
                             .post(requestBody)
                             .build();
-                    Response response=client.newCall(request).execute();
-                    String responseData=response.body().string();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
 
                     Document doc = Jsoup.parse(responseData);   //判断是否登陆成功
                     Elements isOK = doc.select("title");
-                    if(isOK.text().equals("登录成功窗")){
-                        String data=getUsedData();
+                    if (isOK.text().equals("登录成功窗")) {
+                        String data = getUsedData();
 
-                        Message message=new Message();
-                        message.what=LOGIN_SUCESS;
-                        message.obj=data;
-                        handler.sendMessage(message);
-
-                        isLogined=true;
+                        if (!isTile) {
+                            Message message = new Message();
+                            message.what = LOGIN_SUCESS;
+                            message.obj = data;
+                            handler.sendMessage(message);
+                        }
+                        else{
+                            Message message = new Message();
+                            message.what = MAKE_TOAST;
+                            message.arg1=1;
+                            handler.sendMessage(message);
+                        }
+                    } else {
+                        if(!isTile) {
+                            Message message = new Message();
+                            message.what = LOGIN_FAILED;
+                            handler.sendMessage(message);
+                        }
+                        else{
+                            Message message = new Message();
+                            message.what = MAKE_TOAST;
+                            message.arg1=0;
+                            handler.sendMessage(message);
+                        }
                     }
-                    else{
-                        Message message=new Message();
-                        message.what=LOGIN_FAILED;
-                        handler.sendMessage(message);
-
-                        isLogined=false;
-                    }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
