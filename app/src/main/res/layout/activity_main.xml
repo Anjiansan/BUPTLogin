@@ -158,7 +158,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="#00ddff"
+        app:backgroundTint="#00ddff"
         app:rippleColor="@color/colorPrimary"
         android:src="@drawable/about"
         app:layout_anchor="@id/appBar"
