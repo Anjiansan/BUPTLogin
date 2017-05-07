@@ -64,14 +64,11 @@ public class MainActivity extends AppCompatActivity {
     private static String account;
     private static String pwd;
     private static TextView responseView;
-    private static Button logoutBtn;
     private static Context context;
 
     private static final int LOGIN_FAILED=0;
     private static final int LOGIN_SUCESS=1;
     private static final int MAKE_TOAST=2;
-    private static final int LOGOUT_SUCCESS=3;
-    private static final int LOGOUT_FAILED=4;
 
     private static Handler handler=new Handler(){
         public void handleMessage(Message msg){
@@ -85,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
                     android7Hint.setVisibility(View.INVISIBLE);
 
                     responseView.setText(msg.obj.toString());
-                    responseView.setVisibility(View.VISIBLE);
-                    logoutBtn.setVisibility(View.VISIBLE);
                     Toast.makeText(context,"已登录",Toast.LENGTH_SHORT).show();
                     break;
                 case LOGIN_FAILED:
@@ -96,22 +91,6 @@ public class MainActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         QuickSettingService.makeToast(msg.arg1);
                     }
-                    break;
-                case LOGOUT_SUCCESS:
-                    accountEdit.setVisibility(View.VISIBLE);
-                    pwdEdit.setVisibility(View.VISIBLE);
-                    rememberMe.setVisibility(View.VISIBLE);
-                    autoLogin.setVisibility(View.VISIBLE);
-                    loginBtn.setVisibility(View.VISIBLE);
-                    android7Hint.setVisibility(View.VISIBLE);
-
-                    Toast.makeText(context,"已注销",Toast.LENGTH_SHORT).show();
-                    responseView.setVisibility(View.INVISIBLE);
-                    logoutBtn.setVisibility(View.INVISIBLE);
-                    break;
-                case LOGOUT_FAILED:
-                    Toast.makeText(context,"注销失败,请重试",Toast.LENGTH_SHORT).show();
-                    break;
                 default:
                     break;
             }
@@ -129,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         ImageView imageView=(ImageView)findViewById(R.id.image_view);
         FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.fab);
         loginBtn=(Button)findViewById(R.id.login_btn);
-        logoutBtn=(Button)findViewById(R.id.logout_btn);
         rememberMe=(CheckBox)findViewById(R.id.remember);
         autoLogin=(CheckBox)findViewById(R.id.auto_login);
         accountEdit=(EditText)findViewById(R.id.account_text);
@@ -142,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         timerText=(TextView)findViewById(R.id.timer_text);
         timerText.setText("定时登录已关闭");
 
+<<<<<<< HEAD
         responseView.setVisibility(View.INVISIBLE);
         logoutBtn.setVisibility(View.INVISIBLE);
 
@@ -189,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+=======
+>>>>>>> parent of 83b2db7... 添加注销功能,V1.1版本
         boolean isRemember=pref.getBoolean("remember_me",false);    //是否记住密码
         if(isRemember){
             account=pref.getString("account","");
@@ -234,33 +215,6 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
 
                 login(account,pwd,false);
-            }
-        });
-
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            Document doc = Jsoup.connect("http://10.3.8.211/F.htm").get();
-                            Elements isOK = doc.select("title");
-                            if(isOK.text().equals("信息返回窗")){
-                                Message message=new Message();
-                                message.what=LOGOUT_SUCCESS;
-                                handler.sendMessage(message);
-                            }
-                            else{
-                                Message message=new Message();
-                                message.what=LOGOUT_FAILED;
-                                handler.sendMessage(message);
-                            }
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
             }
         });
     }
