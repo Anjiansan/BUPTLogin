@@ -10,5 +10,5 @@
     <string name="dev_hint">开发者</string>
     <string name="developer">Anjiansan</string>
     <string name="about">关于</string>
-    <string name="about_me">\u3000\u3000由于刚接触android编程不久,很多方面存在不足,源码已放于github(https://github.com/Anjiansan/BUPTLogin), 方便交流使用,欢迎改进</string>
+    <string name="about_me">\u3000\u3000由于刚接触android编程不久,很多方面存在不足,源码已放于 github (https://github.com/Anjiansan/BUPTLogin), 方便交流使用,欢迎改进</string>
 </resources>
