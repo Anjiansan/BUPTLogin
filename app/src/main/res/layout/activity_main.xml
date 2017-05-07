@@ -58,15 +58,47 @@
                 <!--android:layout_marginTop="15dp"-->
                 <!--app:cardCornerRadius="4dp" >-->
 
+            <LinearLayout
+                android:id="@+id/timer_layout"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp">
+
+                <TextView
+                    android:id="@+id/timer_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:longClickable="false"
+                    android:textOff="Off"
+                    android:textOn="On"
+                    app:showText="true"
+                    app:switchTextAppearance="@style/SwitchCompat.Text"
+                    app:theme="@style/SwitchCompat.Control" />
+
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/account_text"
                 android:background="@drawable/bg_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/timer_layout"
                 android:maxLines="1"
                 android:textSize="25sp"
                 android:inputType="number"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="60dp"
                 android:layout_marginRight="60dp"
@@ -141,7 +173,8 @@
                 android:id="@+id/response"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="50dp"
+                android:layout_below="@id/timer_layout"
+                android:layout_marginTop="30dp"
                 android:layout_marginBottom="60dp"
                 android:layout_marginLeft="60dp"
                 android:layout_marginRight="60dp"
