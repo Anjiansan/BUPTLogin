@@ -1,8 +1,6 @@
 package com.example.anjiansan.buptlogin;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -15,18 +13,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -38,7 +32,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private static SwitchCompat switcher;
-    private static TextView timerText;
     private static EditText accountEdit;
     private static EditText pwdEdit;
     private static CheckBox rememberMe;
@@ -64,11 +55,14 @@ public class MainActivity extends AppCompatActivity {
     private static String account;
     private static String pwd;
     private static TextView responseView;
+    private static Button logoutBtn;
     private static Context context;
 
     private static final int LOGIN_FAILED=0;
     private static final int LOGIN_SUCESS=1;
     private static final int MAKE_TOAST=2;
+    private static final int LOGOUT_SUCCESS=3;
+    private static final int LOGOUT_FAILED=4;
 
     private static Handler handler=new Handler(){
         public void handleMessage(Message msg){
@@ -82,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                     android7Hint.setVisibility(View.INVISIBLE);
 
                     responseView.setText(msg.obj.toString());
+                    responseView.setVisibility(View.VISIBLE);
+                    logoutBtn.setVisibility(View.VISIBLE);
                     Toast.makeText(context,"已登录",Toast.LENGTH_SHORT).show();
                     break;
                 case LOGIN_FAILED:
@@ -91,6 +87,22 @@ public class MainActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         QuickSettingService.makeToast(msg.arg1);
                     }
+                    break;
+                case LOGOUT_SUCCESS:
+                    accountEdit.setVisibility(View.VISIBLE);
+                    pwdEdit.setVisibility(View.VISIBLE);
+                    rememberMe.setVisibility(View.VISIBLE);
+                    autoLogin.setVisibility(View.VISIBLE);
+                    loginBtn.setVisibility(View.VISIBLE);
+                    android7Hint.setVisibility(View.VISIBLE);
+
+                    Toast.makeText(context,"已注销",Toast.LENGTH_SHORT).show();
+                    responseView.setVisibility(View.INVISIBLE);
+                    logoutBtn.setVisibility(View.INVISIBLE);
+                    break;
+                case LOGOUT_FAILED:
+                    Toast.makeText(context,"注销失败,请重试",Toast.LENGTH_SHORT).show();
+                    break;
                 default:
                     break;
             }
@@ -108,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView imageView=(ImageView)findViewById(R.id.image_view);
         FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.fab);
         loginBtn=(Button)findViewById(R.id.login_btn);
+        logoutBtn=(Button)findViewById(R.id.logout_btn);
         rememberMe=(CheckBox)findViewById(R.id.remember);
         autoLogin=(CheckBox)findViewById(R.id.auto_login);
         accountEdit=(EditText)findViewById(R.id.account_text);
@@ -115,64 +128,10 @@ public class MainActivity extends AppCompatActivity {
         android7Hint=(TextView)findViewById(R.id.android7_hint);
         responseView=(TextView)findViewById(R.id.response);
         context=getApplicationContext();
-        switcher=(SwitchCompat) findViewById(R.id.switcher);
-        switcher.setChecked(false);
-        timerText=(TextView)findViewById(R.id.timer_text);
-        timerText.setText("定时登录已关闭");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         responseView.setVisibility(View.INVISIBLE);
         logoutBtn.setVisibility(View.INVISIBLE);
 
-        switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    final StringBuffer time=new StringBuffer();
-
-                    final Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH);
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-
-                    //实例化TimePickerDialog对象
-                    final TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                        //选择完时间后会调用该回调函数
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            time.append(" "  + hourOfDay + ":" + minute);
-                            //设置TextView显示最终选择的时间
-                            timerText.setText("已开启定时登录:"+time);
-
-                            Intent intent=new Intent(context,TimerSevice.class);
-                            intent.putExtra("hour",hourOfDay);
-                            intent.putExtra("minute",minute);
-                            context.startService(intent);
-                        }
-                    }, hour, minute, true);
-                    timePickerDialog.show();
-
-//                    取消
-                    timePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            switcher.setChecked(false);
-                        }
-                    });
-                }
-                else{
-                    timerText.setText("定时登录已关闭");
-                }
-            }
-        });
-
-=======
->>>>>>> parent of 83b2db7... 添加注销功能,V1.1版本
-=======
->>>>>>> parent of 83b2db7... 添加注销功能,V1.1版本
         boolean isRemember=pref.getBoolean("remember_me",false);    //是否记住密码
         if(isRemember){
             account=pref.getString("account","");
@@ -220,6 +179,33 @@ public class MainActivity extends AppCompatActivity {
                 login(account,pwd,false);
             }
         });
+
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Document doc = Jsoup.connect("http://10.3.8.211/F.htm").get();
+                            Elements isOK = doc.select("title");
+                            if(isOK.text().equals("信息返回窗")){
+                                Message message=new Message();
+                                message.what=LOGOUT_SUCCESS;
+                                handler.sendMessage(message);
+                            }
+                            else{
+                                Message message=new Message();
+                                message.what=LOGOUT_FAILED;
+                                handler.sendMessage(message);
+                            }
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
     }
 
     @Override
@@ -245,12 +231,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
-    }
-
-    @Override
-    protected void onDestroy(){
-        Intent intent=new Intent(context,TimerSevice.class);
-        stopService(intent);
     }
 
     public static void login(final String username, final String password, final boolean isTile){
@@ -319,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             Matcher m=p.matcher(doc.toString());
             while(m.find()){
                 String usedTime=m.group(1);
-                data.append("已使用时间:"+usedTime+"min\n\n");
+                data.append("已使用时间:"+usedTime+"min\n\n\n");
             }
 
             p= Pattern.compile("flow='(\\d+) ");    //使用时间
@@ -329,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 Long flow=Long.parseLong(flowString);
                 long flowKB=flow%1024;
                 BigDecimal bd=new BigDecimal((double)flowKB/1024);
-                data.append("已使用校外流量:"+((flow-flowKB)/1024+bd.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue())+"MB\n\n");
+                data.append("已使用校外流量:"+((flow-flowKB)/1024+bd.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue())+"MB\n\n\n");
             }
 
             p= Pattern.compile("fee='(\\d+) ");    //使用时间
