@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         timerText.setText("定时登录已关闭");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         responseView.setVisibility(View.INVISIBLE);
         logoutBtn.setVisibility(View.INVISIBLE);
 
@@ -168,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+=======
+>>>>>>> parent of 83b2db7... 添加注销功能,V1.1版本
 =======
 >>>>>>> parent of 83b2db7... 添加注销功能,V1.1版本
         boolean isRemember=pref.getBoolean("remember_me",false);    //是否记住密码
